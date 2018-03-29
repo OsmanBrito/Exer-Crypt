@@ -5,7 +5,7 @@ import java.net.Socket;
 import java.security.*;
 import java.util.Base64;
 
-//encontrar numero primo e raiz primitiva do numero primo
+//usar BIGINT// encontrar numero primo e raiz primitiva do numero primo
 
 public class Bob {
 

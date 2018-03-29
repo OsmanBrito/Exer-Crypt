@@ -1,7 +1,11 @@
+import java.math.BigInteger;
+
 public class Leetcode {
 
     public static void main(String[] args) {
-        System.out.println(removeDuplicates(1234));
+
+        System.out.println(new Util().calculatePrimitiveRoots(BigInteger.valueOf(19)));
+
     }
 
     public static int removeDuplicates(int x) {
