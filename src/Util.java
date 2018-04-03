@@ -7,18 +7,11 @@ import static java.math.BigInteger.ZERO;
 
 public class Util {
 
-    public boolean isPrime(int number){
-        int y, aux;
-        aux = (int) (number / 2);
-        for (y = 2; y == aux; y++){
-            if (number % y == 0){
-                return true;
-            }
-        }
-        return false;
+    public static boolean isPrime(BigInteger number){
+        return number.isProbablePrime(1);
     }
 
-    public List<BigInteger> calculatePrimitiveRoots(BigInteger value){
+    public static List<BigInteger> calculatePrimitiveRoots(BigInteger value){
         List<BigInteger> coprimes = coprimesOf(value);
         List<BigInteger> primitiveRoots = new ArrayList<BigInteger>();
         BigInteger aux = null;
@@ -39,7 +32,7 @@ public class Util {
         return primitiveRoots;
     }
 
-    private List<BigInteger> coprimesOf(BigInteger value) {
+    private static List<BigInteger> coprimesOf(BigInteger value) {
         List<BigInteger> coprimes = new ArrayList<BigInteger>();
         BigInteger countdown = value.subtract(ONE);
         while (countdown.compareTo(ZERO) != 0) {

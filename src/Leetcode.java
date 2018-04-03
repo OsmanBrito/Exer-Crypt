@@ -1,19 +1,26 @@
 import java.math.BigInteger;
+import java.security.SecureRandom;
+import java.util.List;
+import java.util.Random;
 
 public class Leetcode {
 
     public static void main(String[] args) {
+        SecureRandom random = new SecureRandom();
+        byte bytes[] = new byte[16];
+        random.nextBytes(bytes);
+        BigInteger primo = new BigInteger(bytes.length, random).abs();
 
-        System.out.println(new Util().calculatePrimitiveRoots(BigInteger.valueOf(19)));
-
-    }
-
-    public static int removeDuplicates(int x) {
-        int last_digit = x%10;
-        if (last_digit != 0) {
-
+        while (!Util.isPrime(primo)) {
+            primo = new BigInteger(bytes.length, random).abs();
         }
-        return x;
+        System.out.println(primo);
+        List<BigInteger> raizPrimitiva = Util.calculatePrimitiveRoots(primo);
+        System.out.println(raizPrimitiva);
+        System.out.println(raizPrimitiva.get(raizPrimitiva.size() - 1));
     }
+
+
 
 }
+
