@@ -1,11 +1,10 @@
+package DH;
+
 import java.math.BigInteger;
 import java.security.SecureRandom;
 import java.util.*;
 
-import static java.math.BigInteger.ONE;
-import static java.math.BigInteger.ZERO;
-
-public class Util {
+public class UtilDH{
 
 //    public static boolean isPrime(BigInteger number){
 //        return number.isProbablePrime(1);
@@ -64,7 +63,7 @@ public class Util {
     }
 
     public static void main(String[] args) {
-        BigInteger[] QA = Util.geraQA(32);
+        BigInteger[] QA = UtilDH.geraQA(32);
         System.out.println("q = " + QA[0].toString());
         System.out.println("a = " + QA[1].toString());
     }

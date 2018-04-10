@@ -11,13 +11,13 @@ public class Leetcode {
         random.nextBytes(bytes);
         BigInteger primo = new BigInteger(bytes.length, random).abs();
 
-        while (!Util.isPrime(primo)) {
-            primo = new BigInteger(bytes.length, random).abs();
-        }
-        System.out.println(primo);
-        List<BigInteger> raizPrimitiva = Util.calculatePrimitiveRoots(primo);
-        System.out.println(raizPrimitiva);
-        System.out.println(raizPrimitiva.get(raizPrimitiva.size() - 1));
+//        while (!Util.isPrime(primo)) {
+//            primo = new BigInteger(bytes.length, random).abs();
+//        }
+//        System.out.println(primo);
+//        List<BigInteger> raizPrimitiva = Util.calculatePrimitiveRoots(primo);
+//        System.out.println(raizPrimitiva);
+//        System.out.println(raizPrimitiva.get(raizPrimitiva.size() - 1));
     }
 
 
