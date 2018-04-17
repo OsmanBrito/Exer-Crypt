@@ -1,39 +1,53 @@
-package dh;
-
+package DH;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
-import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 import java.io.*;
 import java.math.BigInteger;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.security.InvalidKeyException;
-import java.security.KeyPair;
-import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
 
 public class AliceDH{
 
     public static void main(String[] args) throws IOException, ClassNotFoundException, NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException, BadPaddingException, IllegalBlockSizeException {
+        BigInteger[] QA = UtilDH.geraQA(64);
+        BigInteger Q = QA[0];
+        BigInteger A = QA[1];
+        System.out.println("");
+
+        BigInteger XAlice = UtilDH.geraNumeroMenorQue(Q);
+        BigInteger YAlice = A.modPow(XAlice, Q);
+
         ServerSocket ss = new ServerSocket(3333);
         Socket s = ss.accept();
 
-        KeyPairGenerator kpg = KeyPairGenerator.getInstance("RSA");
-        KeyPair myPair = kpg.generateKeyPair();
-
         ObjetoTrocaDH objetoTrocaDH = new ObjetoTrocaDH();
-        objetoTrocaDH.setPublicKey(myPair.getPublic());
+        objetoTrocaDH.setA(A);
+        objetoTrocaDH.setQ(Q);
+        objetoTrocaDH.setY(YAlice);
         ObjectOutputStream out = new ObjectOutputStream(s.getOutputStream());
         out.writeObject(objetoTrocaDH);
 
         ObjectInputStream in = new ObjectInputStream(s.getInputStream());
         objetoTrocaDH = (ObjetoTrocaDH) in.readObject();
 
+
+        BigInteger YBob = objetoTrocaDH.getY();
+        BigInteger K = YBob.modPow(XAlice, Q);
+
+        System.out.println("[ALICE] K = "+K);
+
         byte[] arquivoCripto = objetoTrocaDH.getArquivoCriptografado();
+
+        byte[] KBarr = K.toByteArray();
+
+        byte[] chaveAES = new byte[] { KBarr[0], KBarr[1], KBarr[2], KBarr[3], KBarr[4], KBarr[5], KBarr[6], KBarr[7],
+                KBarr[0], KBarr[1], KBarr[2], KBarr[3], KBarr[4], KBarr[5], KBarr[6], KBarr[7]};
 
         SecretKeySpec ks = new SecretKeySpec(chaveAES, "AES");
 

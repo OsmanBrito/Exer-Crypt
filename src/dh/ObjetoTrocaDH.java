@@ -1,8 +1,7 @@
-package dh;
+package DH;
 
 import java.io.Serializable;
 import java.math.BigInteger;
-import java.security.PublicKey;
 
 public class ObjetoTrocaDH implements Serializable{
 
@@ -10,20 +9,7 @@ public class ObjetoTrocaDH implements Serializable{
     private BigInteger Q;
     private BigInteger A;
     private BigInteger Y;
-    private PublicKey publicKey;
     private String nomeArquivo;
-    private byte[] secretKeyAES;
-
-    public ObjetoTrocaDH() {
-    }
-
-    public String getNomeArquivo() {
-        return nomeArquivo;
-    }
-
-    public void setNomeArquivo(String nomeArquivo) {
-        this.nomeArquivo = nomeArquivo;
-    }
 
     public byte[] getArquivoCriptografado() {
         return arquivoCriptografado;
@@ -31,22 +17,6 @@ public class ObjetoTrocaDH implements Serializable{
 
     public void setArquivoCriptografado(byte[] arquivoCriptografado) {
         this.arquivoCriptografado = arquivoCriptografado;
-    }
-
-    public byte[] getSecretKeyAES() {
-        return secretKeyAES;
-    }
-
-    public void setSecretKeyAES(byte[] secretKeyAES) {
-        this.secretKeyAES = secretKeyAES;
-    }
-
-    public PublicKey getPublicKey() {
-        return publicKey;
-    }
-
-    public void setPublicKey(PublicKey publicKey) {
-        this.publicKey = publicKey;
     }
 
     public BigInteger getQ() {
@@ -71,5 +41,13 @@ public class ObjetoTrocaDH implements Serializable{
 
     public void setY(BigInteger y) {
         Y = y;
+    }
+
+    public String getNomeArquivo() {
+        return nomeArquivo;
+    }
+
+    public void setNomeArquivo(String nomeArquivo) {
+        this.nomeArquivo = nomeArquivo;
     }
 }

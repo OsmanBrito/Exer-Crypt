@@ -1,19 +1,20 @@
-package dh;
+package DH;
+
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
-import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 import javax.swing.*;
 import java.io.*;
 import java.math.BigInteger;
 import java.net.Socket;
-import java.security.*;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 
 public class BobDH {
 
-    public static void main(String[] args) throws IOException, NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException, BadPaddingException, IllegalBlockSizeException, ClassNotFoundException {
+    public static void main(String[] args) throws IOException, ClassNotFoundException, NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException, BadPaddingException, IllegalBlockSizeException {
         JFileChooser chooserArquivo = new JFileChooser();
         int escolha = chooserArquivo.showOpenDialog(new JFrame());
         if (escolha != JFileChooser.APPROVE_OPTION) {
@@ -28,33 +29,35 @@ public class BobDH {
         fin.read(barquivo);
         System.out.println("2. Leu o arquivo.");
 
-        Socket socket = new Socket("127.0.0.1",3333);
-        ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
-        ObjetoTrocaDH objetoTrocaDH = (ObjetoTrocaDH) in.readObject();
-        PublicKey publicKeyAlice = objetoTrocaDH.getPublicKey();
+        Socket s = new Socket("localhost", 3333);
+        ObjectInputStream in = new ObjectInputStream(s.getInputStream());
+        ObjetoTrocaDH objetoTrocaDH  = (ObjetoTrocaDH) in.readObject();
+        BigInteger A = objetoTrocaDH.getA();
+        BigInteger Q = objetoTrocaDH.getQ();
+        BigInteger YAlice = objetoTrocaDH.getY();
 
-        IvParameterSpec iv = new IvParameterSpec("RandomInitVector".getBytes("UTF-8"));
-        SecretKeySpec skeySpec = new SecretKeySpec("Bar1234bar12345".getBytes("UTF-8"), "AES");
+        BigInteger XBob = UtilDH.geraNumeroMenorQue(Q);
+        BigInteger YBob = A.modPow(XBob, Q);
+        BigInteger K = YAlice.modPow(XBob,Q);
+        System.out.println("[BOB] K = "+K);
+        byte[] KBarr = K.toByteArray();
 
-        Cipher cipher= Cipher.getInstance("AES");
-        cipher.init(Cipher.ENCRYPT_MODE, secretKeySpec);
-        byte[] arquivoCriptografado= cipher.doFinal(barquivo);
+        byte[] chaveAES = new byte[] { KBarr[0], KBarr[1], KBarr[2], KBarr[3], KBarr[4], KBarr[5], KBarr[6], KBarr[7],
+                KBarr[0], KBarr[1], KBarr[2], KBarr[3], KBarr[4], KBarr[5], KBarr[6], KBarr[7]};
 
-        Cipher cipherRSA = Cipher.getInstance("RSA");
-        cipherRSA.init(Cipher.ENCRYPT_MODE, publicKeyAlice);
-        byte[] secretKeyAESEncrypt = cipherRSA.doFinal(chaveEAS);
+        SecretKeySpec ks = new SecretKeySpec(chaveAES, "AES");
 
-        objetoTrocaDH= new ObjetoTrocaDH();
-        objetoTrocaDH.setY(Ybob);
-        objetoTrocaDH.setArquivoCriptografado(arquivoCriptografado);
+        Cipher cipher = Cipher.getInstance("AES");
+        cipher.init(Cipher.ENCRYPT_MODE, ks);
+        byte[] arquivoCripto = cipher.doFinal(barquivo);
+
+        objetoTrocaDH = new ObjetoTrocaDH();
+        objetoTrocaDH.setY(YBob);
+        objetoTrocaDH.setArquivoCriptografado(arquivoCripto);
         objetoTrocaDH.setNomeArquivo(chooserArquivo.getSelectedFile().getName());
-        objetoTrocaDH.setSecretKeyAES(secretKeyAESEncrypt);
-        ObjectOutputStream outputStream = new ObjectOutputStream(socket.getOutputStream());
-        outputStream.writeObject(objetoTrocaDH);
 
-        socket.close();
-
-
-
+        ObjectOutputStream out = new ObjectOutputStream(s.getOutputStream());
+        out.writeObject(objetoTrocaDH);
     }
+
 }
